@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / compiled files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+
+# Django stuff
+*.log
+*.pot
+*.mo
+*.po
+db.sqlite3
+media/ # User-uploaded files (if serving locally)
+static/ # Collectstatic files (if serving locally)
+
+# Virtual environment
+venv/
+env/
+.env/
+.venv/
+
+# IDE-specific files
+.idea/
+# OS generated files
+.DS_Store
+.Trashes
+Thumbs.db
