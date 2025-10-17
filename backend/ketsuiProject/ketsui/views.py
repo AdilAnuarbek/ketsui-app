@@ -1,31 +1,40 @@
 from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from ketsui.helper_functions import romaji_to_hiragana
-from ketsui.models import Post
+from ketsui.models import Kanj, Task
+from ketsui.serializer import TaskSerializer
 
+
+# from .models import Gloss
 # Create your views here.
 
 def index(request):
     context = {}
     return render(request, "index.html", context)
 
-def post_list(request):
-    posts = Post.objects.all().order_by('-created_at') # Get all posts, newest first
-    context = {'posts': posts}
-    return render(request, 'post_list.html', context)
+# @api_view(['GET'])
+# def search(request, term):
+#     results = Gloss.objects.filter(text__icontains=term)[:30]
+#     return Response([
+#         {"gloss": g.txt, "lang": g.lang, "sense_id": g.sens}
+#         for g in results
+#     ])
 
-def post_detail(request, slug):
-    post = Post.objects.get(slug=slug) # Get the specific post
-    context = {'post': post}
-    return render(request, 'post_detail.html', context)
+@api_view(['GET'])
+def kanji_search(request, term):
+    """
+    Search JMdict for kanji entries that contain the given character(s).
+    """
+    results = (
+        Kanj.objects
+        .filter(txt__icontains=term)
+        .values('entr', 'txt')[:50]
+    )
 
-def hiragana_table(request):
-    context = {}
-    return render(request, 'hiragana/hiragana.html', context)
+    return Response(list(results))
 
-def hiragana_kana(request, kana):
-    context = {'kana': {
-        'romaji': kana,
-        'hiragana': romaji_to_hiragana(kana),
-    }}
-    return render(request, 'hiragana/kana.html', context)
+class TaskViewSet(viewsets.ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
