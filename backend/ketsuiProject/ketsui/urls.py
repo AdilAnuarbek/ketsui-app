@@ -1,10 +1,19 @@
-from django.urls import path
-from . import views
+from django.contrib.messages import api
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
+from . import views
+from .views import TaskViewSet
+
+# urlpatterns = [
+#     path("", views.index, name="index"),
+#     # path("search/<str:term>/", views.search, name="search"),
+#     # path("kanji_search/<str:term>/", views.kanji_search, name="kanji_search"),
+#     path('api/', include('api.urls'))
+# ]
+
+router = DefaultRouter()
+router.register(r'tasks', TaskViewSet)
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("post_list/", views.post_list, name="post_list"),
-    path("posts/<slug:slug>/", views.post_detail, name="post_detail"),
-    path("hiragana_table/", views.hiragana_table, name="hiragana_table"),
-    path("hiragana_table/<str:kana>/", views.hiragana_kana, name="hiragana_kana"),
+    path('', include(router.urls)),
 ]
